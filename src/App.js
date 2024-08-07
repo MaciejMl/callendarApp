@@ -1,8 +1,11 @@
+import { Container } from '@mui/material';
+import Home from './components/Home/Home';
+
 function App() {
   return (
-    <div className='App'>
-      <p>Callendar App</p>
-    </div>
+    <Container>
+      <Home />
+    </Container>
   );
 }
 
