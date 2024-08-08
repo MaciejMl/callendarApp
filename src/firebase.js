@@ -1,20 +1,20 @@
 //import { getAnalytics } from 'firebase/analytics';
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
+const { initializeApp } = require('firebase/app');
+const { getFirestore } = require('firebase/firestore');
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyCMY3TOdsrVIfuCBy2980Z0HZVmOGQWI20',
-  authDomain: 'myjobproject-eeb31.firebaseapp.com',
-  projectId: 'myjobproject-eeb31',
-  storageBucket: 'myjobproject-eeb31.appspot.com',
-  messagingSenderId: '335362323082',
-  appId: '1:335362323082:web:02848e353830d8148ef373',
-  measurementId: 'G-0Q3JMECZL0',
+  apiKey: 'AIzaSyAL3KDabF-79AOjQaigqnh1rBi76Y14bCY',
+  authDomain: 'myjobapp-e1c81.firebaseapp.com',
+  projectId: 'myjobapp-e1c81',
+  storageBucket: 'myjobapp-e1c81.appspot.com',
+  messagingSenderId: '923544251824',
+  appId: '1:923544251824:web:7efd3e216cbb13d5ac3a75',
+  measurementId: 'G-PBRJHH2KMH',
 };
 
 const app = initializeApp(firebaseConfig);
 //const analytics = getAnalytics(app);
 const db = getFirestore(app);
-export { db };
+module.exports = { db };
