@@ -7,19 +7,19 @@ async function seed() {
 
     const sampleData = [
       {
-        startDate: '2024-08-10T09:45',
-        endDate: '2024-08-10T11:00',
-        title: 'Meeting',
-      },
-      {
         startDate: '2024-08-10T12:00',
         endDate: '2024-08-10T13:30',
         title: 'Go to the gym',
       },
       {
-        startDate: '2024-08-11T10:00',
-        endDate: '2024-08-11T11:30',
-        title: 'Doctor Appointment',
+        startDate: '2024-08-12T12:00',
+        endDate: '2024-08-12T13:30',
+        title: 'Go to the park',
+      },
+      {
+        startDate: '2024-08-10T13:00',
+        endDate: '2024-08-13T13:30',
+        title: 'Visit friends',
       },
     ];
 
