@@ -13,6 +13,9 @@ import { useState, useEffect, useCallback } from 'react';
 import { db } from '../../../firebase';
 import ExternalViewSwitcher from '../../features/ExternalViewSwitcher/ExternalViewSwitcher';
 import moment from 'moment';
+import 'moment/locale/pl';
+
+moment.locale('pl');
 
 const Home = () => {
   const [schedulerData, setSchedulerData] = useState([]);
@@ -37,47 +40,89 @@ const Home = () => {
 
   const commitChanges = useCallback(
     async ({ added, changed, deleted }) => {
-      console.log('Changes received:', { added, changed, deleted });
-
       let newData = [...schedulerData];
 
       if (added) {
-        const newAppointmentRef = await addDoc(collection(db, 'appointments'), {
-          ...added,
-          startDate: moment(added.startDate).toISOString(),
-          endDate: moment(added.endDate).toISOString(),
-        });
-        newData = [...newData, { id: newAppointmentRef.id, ...added }];
+        if (!added.title || !added.startDate || !added.endDate) {
+          alert('Wszystkie pola muszą być wypełnione!');
+          return;
+        }
+
+        if (new Date(added.startDate) >= new Date(added.endDate)) {
+          alert('Data rozpoczęcia musi być wcześniejsza niż data zakończenia!');
+          return;
+        }
+
+        try {
+          const newAppointmentRef = await addDoc(
+            collection(db, 'appointments'),
+            {
+              ...added,
+              startDate: moment(added.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+              endDate: moment(added.endDate).format('YYYY-MM-DDTHH:mm:ss'),
+            }
+          );
+          newData = [...newData, { id: newAppointmentRef.id, ...added }];
+        } catch (error) {
+          alert('Wystąpił błąd podczas zapisywania wydarzenia!');
+          console.error('Error adding document: ', error);
+        }
       }
 
       if (changed) {
-        newData = newData.map((appointment) =>
-          changed[appointment.id]
-            ? {
-                ...appointment,
-                ...changed[appointment.id],
-                startDate: moment(
-                  changed[appointment.id].startDate
-                ).toISOString(),
-                endDate: moment(changed[appointment.id].endDate).toISOString(),
-              }
-            : appointment
-        );
         for (const id in changed) {
-          const appointmentDoc = doc(db, 'appointments', id);
-          await updateDoc(appointmentDoc, {
-            ...changed[id],
-            startDate: moment(changed[id].startDate).toISOString(),
-            endDate: moment(changed[id].endDate).toISOString(),
-          });
+          const change = changed[id];
+          console.log(change);
+          if (!change.title || !change.startDate || !change.endDate) {
+            alert('Wszystkie pola muszą być na nowo wypełnione!');
+            return;
+          }
+
+          if (new Date(change.startDate) >= new Date(change.endDate)) {
+            alert(
+              'Data rozpoczęcia musi być wcześniejsza niż data zakończenia!'
+            );
+            return;
+          }
+
+          try {
+            const appointmentDoc = doc(db, 'appointments', id);
+            await updateDoc(appointmentDoc, {
+              ...change,
+              startDate: moment(change.startDate).format('YYYY-MM-DDTHH:mm:ss'),
+              endDate: moment(change.endDate).format('YYYY-MM-DDTHH:mm:ss'),
+            });
+
+            newData = newData.map((appointment) =>
+              appointment.id === id
+                ? {
+                    ...appointment,
+                    ...change,
+                    startDate: moment(change.startDate).format(
+                      'YYYY-MM-DDTHH:mm:ss'
+                    ),
+                    endDate: moment(change.endDate).format(
+                      'YYYY-MM-DDTHH:mm:ss'
+                    ),
+                  }
+                : appointment
+            );
+          } catch (error) {
+            alert('Wystąpił błąd podczas edytowania wydarzenia!');
+            console.error('Error updating document: ', error);
+          }
         }
       }
 
       if (deleted !== undefined) {
-        newData = newData.filter((appointment) => appointment.id !== deleted);
-        await deleteDoc(doc(db, 'appointments', deleted));
+        try {
+          await deleteDoc(doc(db, 'appointments', deleted));
+          newData = newData.filter((appointment) => appointment.id !== deleted);
+        } catch (error) {
+          alert('Wystąpił błąd podczas usuwania wydarzenia!');
+          console.error('Error deleting document: ', error);
+        }
       }
-
       setSchedulerData(newData);
     },
     [schedulerData]

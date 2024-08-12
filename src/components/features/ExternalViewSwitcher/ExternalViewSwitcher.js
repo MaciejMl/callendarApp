@@ -10,9 +10,9 @@ const ExternalViewSwitcher = ({ currentViewName, onChange }) => (
     value={currentViewName}
     onChange={onChange}
   >
-    <FormControlLabel value='Day' control={<Radio />} label='Day' />
-    <FormControlLabel value='Week' control={<Radio />} label='Week' />
-    <FormControlLabel value='Month' control={<Radio />} label='Month' />
+    <FormControlLabel value='Day' control={<Radio />} label='Dzień' />
+    <FormControlLabel value='Week' control={<Radio />} label='Tydzień' />
+    <FormControlLabel value='Month' control={<Radio />} label='Miesiąc' />
   </RadioGroup>
 );
 
